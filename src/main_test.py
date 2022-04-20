@@ -14,6 +14,6 @@ print(g.adj)
 path=m.BFS(g,'a','f')
 
 path_graph=nx.DiGraph()
-path_graph.add_edges_from(path)
+path_graph.add_nodes_from(path)
 nx.draw(path_graph,with_labels=True)
 plt.show()
