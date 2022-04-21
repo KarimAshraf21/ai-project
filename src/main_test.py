@@ -11,7 +11,7 @@ g.add_edges_from(e)
 
 print(g.adj)
 
-path=m.BFS(g,'a','b')
+path=m.DFS(g,'a','f')
 subax1 = plt.subplot(121)
 nx.draw(g, pos=nx.spring_layout(g),with_labels=True)
 path_graph=nx.DiGraph()
