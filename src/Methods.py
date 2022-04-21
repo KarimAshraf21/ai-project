@@ -1,6 +1,7 @@
 import networkx as nx
 from queue import Queue
 
+
 def BFS(graph, start_node, goal_node):
     visited = []
     fringe = Queue()
@@ -16,7 +17,7 @@ def BFS(graph, start_node, goal_node):
         print(f"fringe: {fringe.queue}")
         current_node = fringe.get()
         print(f"current node {current_node}")
-        if (current_node == goal_node):
+        if current_node == goal_node:
             # print("goal is ", current_node)
             visited.append(current_node)
             found = True
@@ -25,8 +26,13 @@ def BFS(graph, start_node, goal_node):
             visited.append(current_node)
             neighbors_iter = graph.neighbors(current_node)
             neighbors = list(neighbors_iter)
-            for neighbor in neighbors:    #problem with appending value
-                parent[neighbor]=(current_node)
+            print(neighbors)
+            print(parent)
+            for neighbor in neighbors:  # problem with appending value
+                if neighbor in parent.keys():
+                    list(parent[neighbor]).extend(current_node)
+                else:
+                    parent[neighbor]=(current_node)
             for neighbor in neighbors:
                 print(f"neighbor {neighbor}")
                 if neighbor in visited:
