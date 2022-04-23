@@ -129,3 +129,8 @@ def DFS(graph, start_node, goal_node):
     print(parent)
     print(f"path is {path}")
     return path
+
+
+def UCS(graph,start_node,goal_node):
+    #lessa hakteb
+
