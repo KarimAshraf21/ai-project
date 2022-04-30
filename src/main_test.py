@@ -2,6 +2,7 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import Methods as m
 
+
 e = [('a', 'c'), ('a', 'e'), ('c', 'b'), ('b', 'e'),('e', 'f'),('e', 'd')]
 '''g=nx.DiGraph()'''
 g=nx.MultiDiGraph()

@@ -131,6 +131,6 @@ def DFS(graph, start_node, goal_node):
     return path
 
 
-def UCS(graph,start_node,goal_node):
-    #lessa hakteb
+
+
 
