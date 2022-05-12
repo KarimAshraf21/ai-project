@@ -61,6 +61,8 @@ def BFS(graph, start_node, goal_node):
     else:
         print('not found')
 
+
+
     print(f"visited is {visited}")
     print(parent)
     print(f"path is {path}")

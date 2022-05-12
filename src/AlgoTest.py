@@ -168,7 +168,7 @@ class Graph:
         print('Path does not exist!')
         return None
 
-graph = Graph({
+'''graph = Graph({
      'A': [('B', 3), ('C', 1)],
      'B': [('D', 3)],
      'C': [('D', 1),('G',2)],
@@ -182,4 +182,4 @@ graph = Graph({
     'D': 5,
 })
 #graph.a_star('A','D')
-graph.uniform_cost('S','G')
+graph.uniform_cost('S','G')'''
