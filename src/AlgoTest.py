@@ -14,9 +14,7 @@ class Graph:
     def get_neighbors(self, v):
         return self.adjacency_list[v]
 
-    def h(self, n):
-        H = self.heuristics_list
-        return H[n]
+
     def uniform_cost(self, start_node, stop_node):
 
         # open_list is a list of nodes which have been visited, but who's neighbors
@@ -116,7 +114,7 @@ class Graph:
 
             # find a node with the lowest value of f() - evaluation function
             for v in open_list:
-                if n == None or g[v] + self.h(v) < g[n] + self.h(n):
+                if n == None or g[v] + self.heuristics_list[v] < g[n] + self.heuristics_list[n]:
                     n = v;
 
             if n == None:
@@ -168,7 +166,7 @@ class Graph:
         print('Path does not exist!')
         return None
 
-'''graph = Graph({
+graph = Graph({
      'A': [('B', 3), ('C', 1)],
      'B': [('D', 3)],
      'C': [('D', 1),('G',2)],
@@ -180,6 +178,7 @@ class Graph:
     'B': 3,
     'C': 4,
     'D': 5,
+    'G': 12
 })
-#graph.a_star('A','D')
-graph.uniform_cost('S','G')'''
+graph.a_star('A','D')
+graph.uniform_cost('S','G')
