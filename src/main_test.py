@@ -7,26 +7,23 @@ import AlgoTest as at
 '''g=nx.DiGraph()'''
 #g=nx.MultiDiGraph()
 #g.add_edges_from(e)
-graph = at.Graph({
-    "A": {"B": 10, "C": 3},
-    "B": {"C": 1, "D": 2},
-    "C": {"B": 4, "D": 8, "E": 2},
-    "D": {"E": 7},
-    "E": {"D": 9}
-     }, {
-    'A': 2,
-    'B': 3,
-    'C': 4,
-    'D': 5,
-})
+
+graph= {'A': {'B': {'weight': 10}, 'C': {'weight': 3}},
+ 'B': {'C': {'weight': 1}, 'D': {'weight': 2}},
+ 'C': {'B': {'weight': 4}, 'D': {'weight': 8}, 'E': {'weight': 2}},
+ 'D': {'E': {'weight': 7}},
+ 'E': {'D': {'weight': 9}}}
+
+
 #graph.a_star('A','D')
 #graph.uniform_cost('S','G')
 
 
 
 #print(graph.adjacency_list)
-g=nx.MultiGraph(graph.adjacency_list)
-nx.draw_networkx(graph, with_labels=True)
+G = nx.from_dict_of_dicts(graph, create_using=nx.DiGraph)
+#g=nx.MultiGraph(graph)
+nx.draw_networkx(G, with_labels=True)
 plt.show()
 
 

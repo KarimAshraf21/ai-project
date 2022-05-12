@@ -1,6 +1,8 @@
 from collections import deque
 
+
 class Graph:
+
     # example of adjacency list (or rather map)
     # adjacency_list = {
     # 'A': [('B', 1), ('C', 3), ('D', 7)],
@@ -11,28 +13,33 @@ class Graph:
     def __init__(self, adjacency_list, heuristics_list):
         self.adjacency_list = adjacency_list
         self.heuristics_list = heuristics_list
+
     def get_neighbors(self, v):
         return self.adjacency_list[v]
 
     def h(self, n):
         H = self.heuristics_list
         return H[n]
+
     def uniform_cost(self, start_node, stop_node):
 
         # open_list is a list of nodes which have been visited, but who's neighbors
         # haven't all been inspected, starts off with the start node
         # closed_list is a list of nodes which have been visited
         # and who's neighbors have been inspected
+
         open_list = set([start_node])
         closed_list = set([])
 
         # g contains current distances from start_node to all other nodes
         # the default value (if it's not found in the map) is +infinity
+
         g = {}
 
         g[start_node] = 0
 
         # parents contains an adjacency map of all nodes
+
         parents = {}
         parents[start_node] = start_node
 
@@ -92,6 +99,7 @@ class Graph:
 
         print('Path does not exist!')
         return None
+
     def a_star(self, start_node, stop_node):
 
         # open_list is a list of nodes which have been visited, but who's neighbors
@@ -168,18 +176,19 @@ class Graph:
         print('Path does not exist!')
         return None
 
-'''graph = Graph({
-     'A': [('B', 3), ('C', 1)],
-     'B': [('D', 3)],
-     'C': [('D', 1),('G',2)],
-     'D':[('G',3)],
-     'G':[],
-     'S':[('A',1),('G',12)]
-     }, {
+
+graph = Graph({
+    'A': [('B', 3), ('C', 1)],
+    'B': [('D', 3)],
+    'C': [('D', 1), ('G', 2)],
+    'D': [('G', 3)],
+    'G': [],
+    'S': [('A', 1), ('G', 12)]
+}, {
     'A': 2,
     'B': 3,
     'C': 4,
     'D': 5,
 })
-#graph.a_star('A','D')
-graph.uniform_cost('S','G')'''
+# graph.a_star('A','D')
+graph.uniform_cost('S', 'G')
