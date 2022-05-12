@@ -15,11 +15,6 @@ graph= {'A': {'B': {'weight': 10}, 'C': {'weight': 3}},
  'E': {'D': {'weight': 9}}}
 
 
-#graph.a_star('A','D')
-#graph.uniform_cost('S','G')
-
-
-
 #print(graph.adjacency_list)
 G = nx.from_dict_of_dicts(graph, create_using=nx.DiGraph)
 #g=nx.MultiGraph(graph)
