@@ -8,16 +8,36 @@ import AlgoTest as at
 #g=nx.MultiDiGraph()
 #g.add_edges_from(e)
 
-graph= {'A': {'B': {'weight': 10}, 'C': {'weight': 3}},
- 'B': {'C': {'weight': 1}, 'D': {'weight': 2}},
- 'C': {'B': {'weight': 4}, 'D': {'weight': 8}, 'E': {'weight': 2}},
- 'D': {'E': {'weight': 7}},
- 'E': {'D': {'weight': 9}}}
+graph= {'A': {'B': 10, 'C': 3},
+ 'B': {'C': 1, 'D': 2},
+ 'C': {'B': 4, 'D':8, 'E': 2},
+ 'D': {'E': 7},
+ 'E': {'D': 9}}
 
+# Convert integer weights to dictionaries with a single 'weight' element
+gr = {
+    from_: {
+        to_: {'weight': w}
+        for to_, w in to_nodes.items()
+    }
+    for from_, to_nodes in graph.items()
+}
 
-#print(graph.adjacency_list)
+G = nx.from_dict_of_dicts(gr, create_using=nx.DiGraph)
+G.edges.data('weight')
+
+AdjList ={}
+for node in graph:
+    List =[]
+    temp = list(graph[node].items())
+    for i in  temp:
+        List.append(i)
+    AdjList[node] = List
+print(AdjList)
+
+print(graph.adjacency_list)
 G = nx.from_dict_of_dicts(graph, create_using=nx.DiGraph)
-#g=nx.MultiGraph(graph)
+g=nx.MultiGraph(graph)
 nx.draw_networkx(G, with_labels=True)
 plt.show()
 
@@ -27,7 +47,7 @@ subax1 = plt.subplot(121)
 nx.draw(g, pos=nx.spring_layout(g),with_labels=True)
 path_graph=nx.DiGraph()
 path_graph.add_nodes_from(path)
-#path_graph.add_edges_from()
+path_graph.add_edges_from()
 subax2 = plt.subplot(122)
 nx.draw(path_graph,with_labels=True)
 plt.show()'''
