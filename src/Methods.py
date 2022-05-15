@@ -1,6 +1,6 @@
 import networkx as nx
 from queue import Queue
-from queue import PriorityQueue
+
 
 
 def BFS(graph, start_node, goal_node):

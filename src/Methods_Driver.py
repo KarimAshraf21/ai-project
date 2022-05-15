@@ -1,6 +1,6 @@
 import networkx as nx
 import matplotlib.pyplot as plt
-
+import Methods as m
 '''graph = {
     "A": {"B": 10, "C": 3},
     "B": {"C": 1, "D": 2},
@@ -31,6 +31,9 @@ graph= {'A': {'B': {'weight': 10}, 'C': {'weight': 3}},
 G=nx.DiGraph(graph)
 
 nx.draw_networkx(G,pos=nx.spring_layout(G),with_labels=True)
+m.BFS(G,'A','E')
+m.DFS(G,'A','E')
+
 
 #nx.draw_networkx_edge_labels(G,pos)
 plt.show()
