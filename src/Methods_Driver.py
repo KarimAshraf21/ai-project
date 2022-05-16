@@ -30,10 +30,17 @@ graph= {'A': {'B': {'weight': 10}, 'C': {'weight': 3}},
 
 G=nx.DiGraph(graph)
 
-nx.draw_networkx(G,pos=nx.spring_layout(G),with_labels=True)
-m.BFS(G,'A','E')
-m.DFS(G,'A','E')
+#nx.draw_networkx(G,pos=nx.spring_layout(G),with_labels=True)
+#m.BFS(G,'A','E')
 
+"""drawing the path"""
+path_array=m.DFS(G,'A','E')
+path_graph=nx.DiGraph()
+path_graph.add_nodes_from(path_array)
+for i in range(len(path_array)-1):
+ path_graph.add_edge(path_array[i],path_array[i+1])
+
+nx.draw_networkx(path_graph,with_labels=True)
+plt.show()
 
 #nx.draw_networkx_edge_labels(G,pos)
-plt.show()
