@@ -22,7 +22,7 @@ gr = {
 }
 
 G = nx.from_dict_of_dicts(gr, create_using=nx.DiGraph)
-G.edges.data('weight')
+'''G.edges.data('weight')'''
 
 # fathy format conversion
 
@@ -36,8 +36,9 @@ for node in graph:
 
 print(f"here{AdjList}")
 
-g = nx.MultiGraph(graph)
+
 nx.draw_networkx(G, with_labels=True)
+
 plt.show()
 
 

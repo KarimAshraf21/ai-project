@@ -1,4 +1,8 @@
 from collections import deque
+from queue import Queue
+
+import networkx as nx
+from matplotlib import pyplot as plt
 
 
 class Graph:
@@ -15,6 +19,138 @@ class Graph:
 
     def get_neighbors(self, v):
         return self.adjacency_list[v]
+
+    def BreadthFirstSearch(self, start_node, goal_node):
+        # some variables
+        visited = []
+        queue_fringe = Queue()
+        path = []
+        current_node = start_node
+        # dictionary that keeps track of parents to find path
+        parent = dict()
+        parent[start_node] = None
+        found = False
+        # creating the graph
+        self.format1()
+        G = nx.from_dict_of_dicts(self.gr, create_using=nx.MultiDiGraph)
+
+        queue_fringe.put(current_node)
+        while not queue_fringe.empty():  # iterates until no nodes left to visit
+            print(f"fringe: {queue_fringe.queue}")
+            # the node that should be expanded is the node first node in the queue fringe
+            current_node = queue_fringe.get()
+            print(f"current node {current_node}")
+            if current_node == goal_node:
+                # print("goal is ", current_node)
+                visited.append(current_node)
+                found = True
+                break
+            else:
+                # getting neighbors and adding them to the visited list
+                visited.append(current_node)
+                neighbors_iter = G.neighbors(current_node)
+                neighbors = list(neighbors_iter)
+                print(neighbors)
+                print(parent)
+
+                # assigning parents to nodes
+                for neighbor in neighbors:
+                    if neighbor in parent.keys():
+                        list(parent[neighbor]).extend(current_node)
+                    else:
+                        parent[neighbor] = current_node
+
+                # putting unvisited nodes in the fringe
+                for neighbor in neighbors:
+                    print(f"neighbor {neighbor}")
+                    if neighbor in visited:
+                        continue
+                    else:
+                        queue_fringe.put(neighbor)
+                neighbors.clear()
+
+        if found:
+            print("goal found")
+            '''path(goal_node)'''
+            # backtracking for getting the parents which are the path
+            path.append(goal_node)
+            while parent[current_node] is not None:
+                path.append(parent[current_node])
+                current_node = parent[current_node]
+            path.reverse()
+        else:
+            print('not found')
+
+        print(f"visited is {visited}")
+        print(parent)
+        print(f"path is {path}")
+        return path
+
+    def DepthFirstSearch(self, start_node, goal_node):
+        # some variables
+        visited = []
+        stack_fringe = []
+        path = []
+        current_node = start_node
+        # dictionary that keeps track of parents to find path
+        parent = dict()
+        parent[start_node] = None
+        found = False
+        # creating the graph
+        self.format1()
+        G = nx.from_dict_of_dicts(self.gr, create_using=nx.MultiDiGraph)
+
+        stack_fringe.append(current_node)
+
+        while len(stack_fringe):  # iterates until no nodes left to visit
+            # the node that should be expanded is the node on top of the stack
+            current_node = stack_fringe.pop()
+            if current_node == goal_node:
+                visited.append(current_node)
+                found = True
+                break
+            else:
+                # getting neighbors and adding them to the visited list
+                visited.append(current_node)
+                print(f"visited {visited}")
+                neighbors_iter = G.neighbors(current_node)
+                neighbors = list(neighbors_iter)
+                neighbors.sort()
+                neighbors.reverse()
+                print(neighbors)
+                print(parent)
+
+                # assigning parents to nodes
+                for neighbor in neighbors:
+                    if neighbor in parent.keys():
+                        list(parent[neighbor]).extend(current_node)
+                    else:
+                        parent[neighbor] = current_node
+                # pushing nodes into the fringe
+                for neighbor in neighbors:
+                    print(f"neighbor {neighbor}")
+                    if neighbor in visited:
+                        continue
+                    else:
+                        stack_fringe.append(neighbor)
+                neighbors.clear()
+
+        if found:
+            print("goal found")
+            '''path(goal_node)'''
+            # backtracking for getting the parents which are the path
+            path.append(goal_node)
+            while parent[current_node] is not None:
+                path.append(parent[current_node])
+                current_node = parent[current_node]
+            path.reverse()
+        else:
+            print('not found')
+
+        print(f"visited is {visited}")
+        print(parent)
+        print(f"path is {path}")
+        return path
 
     def uniform_cost(self, start_node, stop_node):
 
@@ -244,14 +380,41 @@ class Graph:
         print('Path does not exist!')
         return None
 
+    def format1(self):
+        self.gr = {
+            from_: {
+                to_: {'weight': w}
+                for to_, w in to_nodes.items()
+            }
+            for from_, to_nodes in self.adjacency_list.items()
+        }
+
+    def format2(self):
+        self.AdjList = {}
+        for node in self.adjacency_list:
+            List = []
+            temp = list(self.adjacency_list[node].items())
+            for i in temp:
+                List.append(i)
+            self.AdjList[node] = List
+
+    def draw_path(self, path):  #function takes search function as a parameter
+        self.path_array = path
+        path_graph = nx.DiGraph()
+        path_graph.add_nodes_from(self.path_array)
+        for i in range(len(self.path_array) - 1):
+            path_graph.add_edge(self.path_array[i], self.path_array[i + 1])
+
+        nx.draw_networkx(path_graph, with_labels=True)
+        plt.show()
+
 
 graph = Graph({
-    'A': [('B', 3), ('C', 1)],
-    'B': [('D', 3)],
-    'C': [('D', 1), ('G', 2)],
-    'D': [('G', 3)],
-    'G': [],
-    'S': [('A', 1), ('G', 12)]
+    'A': {'B': 10, 'C': 3},
+    'B': {'C': 1, 'D': 2},
+    'C': {'B': 4, 'D': 8, 'E': 2},
+    'D': {'E': 7},
+    'E': {'D': 9}
 }, {
     'A': 2,
     'B': 3,
@@ -259,6 +422,9 @@ graph = Graph({
     'D': 5,
     'G': 0
 })
-graph.a_star('A', 'D')
+'''graph.a_star('A', 'D')
 graph.uniform_cost('S', 'G')
-graph.Greedy('A', 'D')
+graph.Greedy('A', 'D')'''
+
+graph.BreadthFirstSearch('A', 'D')
+graph.draw_path(graph.DepthFirstSearch('A', 'E'))
