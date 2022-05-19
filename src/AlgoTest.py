@@ -1,5 +1,6 @@
 from collections import deque
 
+
 class Graph:
     # example of adjacency list (or rather map)
     # adjacency_list = {
@@ -11,6 +12,7 @@ class Graph:
     def __init__(self, adjacency_list, heuristics_list):
         self.adjacency_list = adjacency_list
         self.heuristics_list = heuristics_list
+
     def get_neighbors(self, v):
         return self.adjacency_list[v]
 
@@ -89,6 +91,7 @@ class Graph:
 
         print('Path does not exist!')
         return None
+
     def a_star(self, start_node, stop_node):
 
         # open_list is a list of nodes which have been visited, but who's neighbors
@@ -164,6 +167,7 @@ class Graph:
 
         print('Path does not exist!')
         return None
+
     def Greedy(self, start_node, stop_node):
 
         # open_list is a list of nodes which have been visited, but who's neighbors
@@ -175,9 +179,9 @@ class Graph:
 
         # g contains current distances from start_node to all other nodes
         # the default value (if it's not found in the map) is +infinity
-        #g = {}
+        # g = {}
 
-        #g[start_node] = 0
+        # g[start_node] = 0
 
         # parents contains an adjacency map of all nodes
         parents = {}
@@ -188,7 +192,7 @@ class Graph:
 
             # find a node with the lowest value of f() - evaluation function
             for v in open_list:
-                if n == None or  self.heuristics_list[v] <  self.heuristics_list[n]:
+                if n == None or self.heuristics_list[v] < self.heuristics_list[n]:
                     n = v;
 
             if n == None:
@@ -218,14 +222,14 @@ class Graph:
                 if m not in open_list and m not in closed_list:
                     open_list.add(m)
                     parents[m] = n
-                    #g[m] = g[n] + weight
+                    # g[m] = g[n] + weight
 
                 # otherwise, check if it's quicker to first visit n, then m
                 # and if it is, update parent data and g data
                 # and if the node was in the closed_list, move it to open_list
                 else:
                     if self.heuristics_list[m] > self.heuristics_list[n]:
-                        #g[m] = g[n] + weight
+                        # g[m] = g[n] + weight
                         parents[m] = n
 
                         if m in closed_list:
@@ -240,20 +244,21 @@ class Graph:
         print('Path does not exist!')
         return None
 
+
 graph = Graph({
-     'A': [('B', 3), ('C', 1)],
-     'B': [('D', 3)],
-     'C': [('D', 1),('G',2)],
-     'D':[('G',3)],
-     'G':[],
-     'S':[('A',1),('G',12)]
-     }, {
+    'A': [('B', 3), ('C', 1)],
+    'B': [('D', 3)],
+    'C': [('D', 1), ('G', 2)],
+    'D': [('G', 3)],
+    'G': [],
+    'S': [('A', 1), ('G', 12)]
+}, {
     'A': 2,
     'B': 3,
     'C': 4,
     'D': 5,
-    'G':0
+    'G': 0
 })
-graph.a_star('A','D')
-graph.uniform_cost('S','G')
-graph.Greedy('A','D')
+graph.a_star('A', 'D')
+graph.uniform_cost('S', 'G')
+graph.Greedy('A', 'D')
