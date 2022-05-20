@@ -1,4 +1,3 @@
-from collections import deque
 from queue import Queue
 
 import networkx as nx
@@ -411,7 +410,44 @@ class Graph:
         plt.show()
 
 
-graph = Graph({
+dict1 = dict()
+dict2 = dict()
+
+
+def input_graph():
+    choice = "yes"
+    while choice == "yes":
+        node = input("enter node name: ")
+        dict1[node] = {}
+
+        adjacency_choice = input("is there any adjacent nodes")
+        while adjacency_choice == "yes":
+            adjacent_node = input("enter adjacent node: ")
+            adjacent_node_edge_weight = int(input("enter edge weight: "))
+            dict1[node][adjacent_node] = adjacent_node_edge_weight
+            adjacency_choice = input("is there any other adjacent nodes?")
+
+        choice = input("do you want to add other nodes?")
+
+    input_heuristics()
+
+
+def input_heuristics():
+    for nodes_keys in dict1.keys():
+        dict2[nodes_keys] = int(input(f"enter heuristic for {nodes_keys}: "))
+
+
+input_graph()
+
+graph = Graph(dict1, dict2)
+
+'''graph.BreadthFirstSearch('A', 'D')
+graph.draw_path(graph.DepthFirstSearch('A', 'E'))'''
+
+graph.draw_path(graph.Greedy('A', 'E'))
+
+
+'''graph = Graph({
     'A': {'B': 10, 'C': 3},
     'B': {'C': 1, 'D': 2},
     'C': {'B': 4, 'D': 8, 'E': 2},
@@ -423,9 +459,4 @@ graph = Graph({
     'C': 4,
     'D': 5,
     'E': 0
-})
-
-'''graph.BreadthFirstSearch('A', 'D')
-graph.draw_path(graph.DepthFirstSearch('A', 'E'))'''
-
-graph.draw_path(graph.Greedy('A', 'E'))
+})'''
