@@ -18,7 +18,7 @@ class Graph:
         self.heuristics_list = heuristics_list
 
     def get_neighbors(self, v):
-        return self.adjacency_list[v]
+        return self.AdjList[v]
 
     def BreadthFirstSearch(self, start_node, goal_node):
         # some variables
@@ -167,6 +167,8 @@ class Graph:
 
         g[start_node] = 0
 
+        self.format2()
+
         # parents contains an adjacency map of all nodes
         parents = {}
         parents[start_node] = start_node
@@ -236,7 +238,7 @@ class Graph:
         # and who's neighbors have been inspected
         open_list = set([start_node])
         closed_list = set([])
-
+        self.format2()
         # g contains current distances from start_node to all other nodes
         # the default value (if it's not found in the map) is +infinity
         g = {}
@@ -305,7 +307,7 @@ class Graph:
         return None
 
     def Greedy(self, start_node, stop_node):
-
+        self.format2()
         # open_list is a list of nodes which have been visited, but who's neighbors
         # haven't all been inspected, starts off with the start node
         # closed_list is a list of nodes which have been visited
@@ -398,7 +400,7 @@ class Graph:
                 List.append(i)
             self.AdjList[node] = List
 
-    def draw_path(self, path):  #function takes search function as a parameter
+    def draw_path(self, path):  # function takes search function as a parameter
         self.path_array = path
         path_graph = nx.DiGraph()
         path_graph.add_nodes_from(self.path_array)
@@ -420,11 +422,10 @@ graph = Graph({
     'B': 3,
     'C': 4,
     'D': 5,
-    'G': 0
+    'E': 0
 })
-'''graph.a_star('A', 'D')
-graph.uniform_cost('S', 'G')
-graph.Greedy('A', 'D')'''
 
-graph.BreadthFirstSearch('A', 'D')
-graph.draw_path(graph.DepthFirstSearch('A', 'E'))
+'''graph.BreadthFirstSearch('A', 'D')
+graph.draw_path(graph.DepthFirstSearch('A', 'E'))'''
+
+graph.draw_path(graph.Greedy('A', 'E'))

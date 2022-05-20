@@ -2,7 +2,6 @@ import networkx as nx
 from queue import Queue
 
 
-
 def BFS(graph, start_node, goal_node):
     # some variables
     visited = []
@@ -60,8 +59,6 @@ def BFS(graph, start_node, goal_node):
         path.reverse()
     else:
         print('not found')
-
-
 
     print(f"visited is {visited}")
     print(parent)
@@ -131,8 +128,3 @@ def DFS(graph, start_node, goal_node):
     print(parent)
     print(f"path is {path}")
     return path
-
-
-
-
-
