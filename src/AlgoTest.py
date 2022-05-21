@@ -479,8 +479,51 @@ class Graph:
         plt.show()
 
 
+'''------------------------------------------------------------------------------------------------'''
+'''gui link area'''
 dict1 = dict()
 dict2 = dict()
+g = None
+
+
+def add_node(node):
+    if node == "":
+        return
+    else:
+        dict1[node] = {}
+        print(dict1)
+
+
+def add_heuristic(node, heuristic):
+    dict2[node] = int(heuristic)
+    print(dict2)
+
+
+def add_edge(node_from, node_to, edge_weight):
+    if node_from in dict1.keys():
+        dict1[node_from][node_to] = int(edge_weight)
+
+    elif node_from not in dict1.keys():
+        add_node(node_from)
+        add_edge(node_from, node_to, edge_weight)
+    if node_to not in dict1.keys():
+        dict1[node_to] = {}
+    print(dict1)
+
+
+def create_graph():
+    g = Graph(dict1, dict2)
+    g.format1()
+    G = nx.from_dict_of_dicts(g.gr, create_using=nx.MultiDiGraph)
+
+    return G
+
+
+def reset_graph():
+    g = None
+
+
+'''------------------------------------------------------------------------------------------------'''
 
 
 def input_graph():
@@ -508,40 +551,30 @@ def input_heuristics():
 
 '''input_graph()'''
 '''graph = Graph(dict1, dict2)'''
-
-graph = Graph({
+dict3 = {
     'A': {'B': 10, 'C': 3},
     'B': {'C': 1, 'D': 2},
     'C': {'B': 4, 'D': 8, 'E': 2},
     'D': {'E': 7},
     'E': {'D': 9}
-}, {
+}
+
+dict4 = {
     'A': 2,
     'B': 3,
     'C': 4,
     'D': 5,
     'E': 0
-})
+}
+graph = Graph(dict3, dict4)
 
-graph.draw_path(graph.BreadthFirstSearch('A', 'D'))
+# tested and completed functions
+'''graph.draw_path(graph.BreadthFirstSearch('A', 'D'))
 graph.draw_path(graph.DepthFirstSearch('A', 'E'))
 graph.draw_path(graph.Greedy('A', 'E'))
 graph.draw_path(graph.a_star('A', 'E'))
-graph.draw_path(graph.uniform_cost('A', 'E'))
+graph.draw_path(graph.uniform_cost('A', 'E'))'''
+
 '''graph.draw_path(graph.IterativeDeepening('A', 'E',10))'''
 '''path1 = graph.BreadthFirstSearch('A', 'E')
 Graph.draw_path(path1)'''
-
-'''graph = Graph({
-    'A': {'B': 10, 'C': 3},
-    'B': {'C': 1, 'D': 2},
-    'C': {'B': 4, 'D': 8, 'E': 2},
-    'D': {'E': 7},
-    'E': {'D': 9}
-}, {
-    'A': 2,
-    'B': 3,
-    'C': 4,
-    'D': 5,
-    'E': 0
-})'''
