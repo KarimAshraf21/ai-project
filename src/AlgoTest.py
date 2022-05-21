@@ -151,7 +151,7 @@ class Graph:
         print(f"path is {path}")
         return path
 
-    def IterativeDeepiningBool(self, start_node, goal_node, max_depth):
+    def IterativeDeepeningBool(self, start_node, goal_node, max_depth):
         # some variables
         visited = []
         stack_fringe = []
@@ -171,7 +171,7 @@ class Graph:
             return True
         if max_depth <= 0:
             return False
-        for (node,weight) in self.get_neighbors(start_node):
+        for (node, weight) in self.get_neighbors(start_node):
             visited.append(current_node)
             print(f"visited {visited}")
             neighbors_iter = G.neighbors(current_node)
@@ -210,15 +210,15 @@ class Graph:
         print(f"visited is {visited}")
         print(parent)
         print(f"path is {path}")
-        if self.IterativeDeepiningBool(node,goal_node,max_depth-1):
-                return True
+        if self.IterativeDeepeningBool(node, goal_node, max_depth - 1):
+            return True
         return False
-    def IterativeDeepining(self, start_node, goal_node, max_depth):
+
+    def IterativeDeepening(self, start_node, goal_node, max_depth):
         for i in range(max_depth):
-            if self.IterativeDeepiningBool(start_node,goal_node,max_depth):
+            if self.IterativeDeepeningBool(start_node, goal_node, max_depth):
                 return True
             return False
-
 
     def uniform_cost(self, start_node, stop_node):
 
@@ -506,15 +506,31 @@ def input_heuristics():
         dict2[nodes_keys] = int(input(f"enter heuristic for {nodes_keys}: "))
 
 
-input_graph()
+'''input_graph()'''
+'''graph = Graph(dict1, dict2)'''
 
-graph = Graph(dict1, dict2)
+graph = Graph({
+    'A': {'B': 10, 'C': 3},
+    'B': {'C': 1, 'D': 2},
+    'C': {'B': 4, 'D': 8, 'E': 2},
+    'D': {'E': 7},
+    'E': {'D': 9}
+}, {
+    'A': 2,
+    'B': 3,
+    'C': 4,
+    'D': 5,
+    'E': 0
+})
 
-'''graph.BreadthFirstSearch('A', 'D')
-graph.draw_path(graph.DepthFirstSearch('A', 'E'))'''
-
+graph.draw_path(graph.BreadthFirstSearch('A', 'D'))
+graph.draw_path(graph.DepthFirstSearch('A', 'E'))
 graph.draw_path(graph.Greedy('A', 'E'))
-
+graph.draw_path(graph.a_star('A', 'E'))
+graph.draw_path(graph.uniform_cost('A', 'E'))
+'''graph.draw_path(graph.IterativeDeepening('A', 'E',10))'''
+'''path1 = graph.BreadthFirstSearch('A', 'E')
+Graph.draw_path(path1)'''
 
 '''graph = Graph({
     'A': {'B': 10, 'C': 3},
