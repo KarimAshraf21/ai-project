@@ -152,6 +152,75 @@ class Graph:
         print(f"path is {path}")
         return path
 
+    def IterativeDeepiningBool(self, start_node, goal_node, max_depth):
+        # some variables
+        visited = []
+        stack_fringe = []
+        path = []
+        current_node = start_node
+        # dictionary that keeps track of parents to find path
+        parent = dict()
+        parent[start_node] = None
+        found = False
+        # creating the graph
+        self.format1()
+        G = nx.from_dict_of_dicts(self.gr, create_using=nx.MultiDiGraph)
+        stack_fringe.append(current_node)
+        if start_node == goal_node:
+            visited.append(current_node)
+            found = True
+            return True
+        if max_depth <= 0:
+            return False
+        for (node,weight) in self.get_neighbors(start_node):
+            visited.append(current_node)
+            print(f"visited {visited}")
+            neighbors_iter = G.neighbors(current_node)
+            neighbors = list(neighbors_iter)
+            neighbors.sort()
+            neighbors.reverse()
+            print(neighbors)
+            print(parent)
+            # assigning parents to nodes
+            for neighbor in neighbors:
+                if neighbor in parent.keys():
+                    list(parent[neighbor]).extend(current_node)
+                else:
+                    parent[neighbor] = current_node
+            # pushing nodes into the fringe
+            for neighbor in neighbors:
+                print(f"neighbor {neighbor}")
+                if neighbor in visited:
+                    continue
+                else:
+                    stack_fringe.append(neighbor)
+            neighbors.clear()
+
+        if found:
+            print("goal found")
+            '''path(goal_node)'''
+            # backtracking for getting the parents which are the path
+            path.append(goal_node)
+            while parent[current_node] is not None:
+                path.append(parent[current_node])
+                current_node = parent[current_node]
+            path.reverse()
+        else:
+            print('not found')
+
+        print(f"visited is {visited}")
+        print(parent)
+        print(f"path is {path}")
+        if self.IterativeDeepiningBool(node,goal_node,max_depth-1):
+                return True
+        return False
+    def IterativeDeepining(self, start_node, goal_node, max_depth):
+        for i in range(max_depth):
+            if self.IterativeDeepiningBool(start_node,goal_node,max_depth):
+                return True
+            return False
+
+
     def uniform_cost(self, start_node, stop_node):
 
         # open_list is a list of nodes which have been visited, but who's neighbors
