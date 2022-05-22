@@ -1,5 +1,4 @@
 from queue import Queue
-
 import networkx as nx
 from matplotlib import pyplot as plt
 
@@ -12,26 +11,80 @@ class Graph:
     # 'C': [('D', 12)]
     # }
 
-    def __init__(self, adjacency_list, heuristics_list):
-        self.adjacency_list = adjacency_list
-        self.heuristics_list = heuristics_list
+    def __init__(self):
+        self.path_array = []
+        self.adjacency_list = dict()
+        self.heuristics_list = dict()
+        self.start_node = None
+        self.goal_nodes = []
+        self.adjFormat1 = dict()
+        self.adjFormat2 = dict()
+
+    def add_node(self, node):
+        if node == "":
+            return
+        else:
+            self.adjacency_list[node] = {}
+        print(self.adjacency_list)
+
+    def add_heuristic(self, node, heuristic):
+        self.heuristics_list[node] = int(heuristic)
+        print(self.heuristics_list)
+
+    def add_edge(self, node_from, node_to, edge_weight):
+        if node_from in self.adjacency_list.keys():
+            self.adjacency_list[node_from][node_to] = int(edge_weight)
+
+        elif node_from not in self.adjacency_list.keys():
+            self.add_node(node_from)
+            self.add_edge(node_from, node_to, edge_weight)
+        if node_to not in self.adjacency_list.keys():
+            self.adjacency_list[node_to] = {}
+        print(self.adjacency_list)
+
+    def reset_graph(self):
+        self.adjacency_list.clear()
+        self.heuristics_list.clear()
+        self.path_array.clear()
+        self.start_node = None
+        self.goal_nodes.clear()
+        self.path_array.clear()
+
+        print(self.adjacency_list)
+        print(self.heuristics_list)
 
     def get_neighbors(self, v):
-        return self.AdjList[v]
+        return self.adjFormat2[v]
 
-    def BreadthFirstSearch(self, start_node, goal_node):
+    def set_start_node(self, start_node):
+        self.start_node = start_node
+        print(self.start_node)
+
+    def reset_start_node(self):
+        self.start_node = None
+        print(self.start_node)
+
+    def append_goal_nodes(self, goal_node):
+        self.goal_nodes.append(goal_node)
+        print(self.goal_nodes)
+
+    def reset_goal_nodes(self):
+        self.goal_nodes.clear()
+        print(self.goal_nodes)
+
+    def BreadthFirstSearch(self):
         # some variables
         visited = []
         queue_fringe = Queue()
         path = []
-        current_node = start_node
+        current_node = self.start_node
         # dictionary that keeps track of parents to find path
         parent = dict()
-        parent[start_node] = None
+        parent[self.start_node] = None
         found = False
         # creating the graph
         self.format1()
-        G = nx.from_dict_of_dicts(self.gr, create_using=nx.MultiDiGraph)
+        G = nx.from_dict_of_dicts(self.adjFormat1, create_using=nx.MultiDiGraph)
 
         queue_fringe.put(current_node)
         while not queue_fringe.empty():  # iterates until no nodes left to visit
@@ -39,10 +92,11 @@ class Graph:
             # the node that should be expanded is the node first node in the queue fringe
             current_node = queue_fringe.get()
             print(f"current node {current_node}")
-            if current_node == goal_node:
+            if current_node in self.goal_nodes:
                 # print("goal is ", current_node)
                 visited.append(current_node)
                 found = True
+                goal_node = current_node
                 break
             else:
                 # getting neighbors and adding them to the visited list
@@ -85,28 +139,29 @@ class Graph:
         print(f"path is {path}")
         return path
 
-    def DepthFirstSearch(self, start_node, goal_node):
+    def DepthFirstSearch(self):
         # some variables
         visited = []
         stack_fringe = []
         path = []
-        current_node = start_node
+        current_node = self.start_node
         # dictionary that keeps track of parents to find path
         parent = dict()
-        parent[start_node] = None
+        parent[self.start_node] = None
         found = False
         # creating the graph
         self.format1()
-        G = nx.from_dict_of_dicts(self.gr, create_using=nx.MultiDiGraph)
+        G = nx.from_dict_of_dicts(self.adjFormat1, create_using=nx.MultiDiGraph)
 
         stack_fringe.append(current_node)
 
         while len(stack_fringe):  # iterates until no nodes left to visit
             # the node that should be expanded is the node on top of the stack
             current_node = stack_fringe.pop()
-            if current_node == goal_node:
+            if current_node in self.goal_nodes:
                 visited.append(current_node)
                 found = True
+                goal_node = current_node
                 break
             else:
                 # getting neighbors and adding them to the visited list
@@ -151,27 +206,95 @@ class Graph:
         print(f"path is {path}")
         return path
 
+    def IterativeDeepeningBool(self, start_node, goal_node, max_depth):
+        # some variables
+        visited = []
+        stack_fringe = []
+        path = []
+        current_node = start_node
+        # dictionary that keeps track of parents to find path
+        parent = dict()
+        parent[start_node] = None
+        found = False
+        # creating the graph
+        self.format1()
+        G = nx.from_dict_of_dicts(self.adjFormat1, create_using=nx.MultiDiGraph)
+        stack_fringe.append(current_node)
+        if start_node == goal_node:
+            visited.append(current_node)
+            found = True
+            return True
+        if max_depth <= 0:
+            return False
+        for (node, weight) in self.get_neighbors(start_node):
+            visited.append(current_node)
+            print(f"visited {visited}")
+            neighbors_iter = G.neighbors(current_node)
+            neighbors = list(neighbors_iter)
+            neighbors.sort()
+            neighbors.reverse()
+            print(neighbors)
+            print(parent)
+            # assigning parents to nodes
+            for neighbor in neighbors:
+                if neighbor in parent.keys():
+                    list(parent[neighbor]).extend(current_node)
+                else:
+                    parent[neighbor] = current_node
+            # pushing nodes into the fringe
+            for neighbor in neighbors:
+                print(f"neighbor {neighbor}")
+                if neighbor in visited:
+                    continue
+                else:
+                    stack_fringe.append(neighbor)
+            neighbors.clear()
 
-    def uniform_cost(self, start_node, stop_node):
+        if found:
+            print("goal found")
+            '''path(goal_node)'''
+            # backtracking for getting the parents which are the path
+            path.append(goal_node)
+            while parent[current_node] is not None:
+                path.append(parent[current_node])
+                current_node = parent[current_node]
+            path.reverse()
+        else:
+            print('not found')
+
+        print(f"visited is {visited}")
+        print(parent)
+        print(f"path is {path}")
+        if self.IterativeDeepeningBool(node, goal_node, max_depth - 1):
+            return True
+        return False
+
+    def IterativeDeepening(self, start_node, goal_node, max_depth):
+        for i in range(max_depth):
+            if self.IterativeDeepeningBool(start_node, goal_node, max_depth):
+                return True
+            return False
+
+    def uniform_cost(self):
 
         # open_list is a list of nodes which have been visited, but who's neighbors
         # haven't all been inspected, starts off with the start node
         # closed_list is a list of nodes which have been visited
         # and who's neighbors have been inspected
-        open_list = set([start_node])
+        open_list = set([self.start_node])
         closed_list = set([])
 
         # g contains current distances from start_node to all other nodes
         # the default value (if it's not found in the map) is +infinity
         g = {}
 
-        g[start_node] = 0
+        g[self.start_node] = 0
 
         self.format2()
 
         # parents contains an adjacency map of all nodes
         parents = {}
-        parents[start_node] = start_node
+        parents[self.start_node] = self.start_node
 
         while len(open_list) > 0:
             n = None
@@ -187,14 +310,14 @@ class Graph:
 
             # if the current node is the stop_node
             # then we begin reconstructin the path from it to the start_node
-            if n == stop_node:
+            if n in self.goal_nodes:
                 reconst_path = []
 
                 while parents[n] != n:
                     reconst_path.append(n)
                     n = parents[n]
 
-                reconst_path.append(start_node)
+                reconst_path.append(self.start_node)
 
                 reconst_path.reverse()
 
@@ -230,24 +353,24 @@ class Graph:
         print('Path does not exist!')
         return None
 
-    def a_star(self, start_node, stop_node):
+    def a_star(self):
 
         # open_list is a list of nodes which have been visited, but who's neighbors
         # haven't all been inspected, starts off with the start node
         # closed_list is a list of nodes which have been visited
         # and who's neighbors have been inspected
-        open_list = set([start_node])
+        open_list = set([self.start_node])
         closed_list = set([])
         self.format2()
         # g contains current distances from start_node to all other nodes
         # the default value (if it's not found in the map) is +infinity
         g = {}
 
-        g[start_node] = 0
+        g[self.start_node] = 0
 
         # parents contains an adjacency map of all nodes
         parents = {}
-        parents[start_node] = start_node
+        parents[self.start_node] = self.start_node
 
         while len(open_list) > 0:
             n = None
@@ -263,14 +386,14 @@ class Graph:
 
             # if the current node is the stop_node
             # then we begin reconstructin the path from it to the start_node
-            if n == stop_node:
+            if n in self.goal_nodes:
                 reconst_path = []
 
                 while parents[n] != n:
                     reconst_path.append(n)
                     n = parents[n]
 
-                reconst_path.append(start_node)
+                reconst_path.append(self.start_node)
 
                 reconst_path.reverse()
 
@@ -306,13 +429,13 @@ class Graph:
         print('Path does not exist!')
         return None
 
-    def Greedy(self, start_node, stop_node):
+    def Greedy(self):
         self.format2()
         # open_list is a list of nodes which have been visited, but who's neighbors
         # haven't all been inspected, starts off with the start node
         # closed_list is a list of nodes which have been visited
         # and who's neighbors have been inspected
-        open_list = set([start_node])
+        open_list = set([self.start_node])
         closed_list = set([])
 
         # g contains current distances from start_node to all other nodes
@@ -323,7 +446,7 @@ class Graph:
 
         # parents contains an adjacency map of all nodes
         parents = {}
-        parents[start_node] = start_node
+        parents[self.start_node] = self.start_node
 
         while len(open_list) > 0:
             n = None
@@ -339,14 +462,14 @@ class Graph:
 
             # if the current node is the stop_node
             # then we begin reconstructin the path from it to the start_node
-            if n == stop_node:
+            if n in self.goal_nodes:
                 reconst_path = []
 
                 while parents[n] != n:
                     reconst_path.append(n)
                     n = parents[n]
 
-                reconst_path.append(start_node)
+                reconst_path.append(self.start_node)
 
                 reconst_path.reverse()
 
@@ -383,7 +506,7 @@ class Graph:
         return None
 
     def format1(self):
-        self.gr = {
+        self.adjFormat1 = {
             from_: {
                 to_: {'weight': w}
                 for to_, w in to_nodes.items()
@@ -392,13 +515,13 @@ class Graph:
         }
 
     def format2(self):
-        self.AdjList = {}
+        self.adjFormat2 = {}
         for node in self.adjacency_list:
             List = []
             temp = list(self.adjacency_list[node].items())
             for i in temp:
                 List.append(i)
-            self.AdjList[node] = List
+            self.adjFormat2[node] = List
 
     def draw_path(self, path):  # function takes search function as a parameter
         self.path_array = path
@@ -411,69 +534,32 @@ class Graph:
         plt.show()
 
 
-dict1 = dict()
-dict2 = dict()
-
-
-def input_graph():
-    choice = "yes"
-    while choice == "yes":
-        node = input("enter node name: ")
-        dict1[node] = {}
-
-        adjacency_choice = input("is there any adjacent nodes")
-        while adjacency_choice == "yes":
-            adjacent_node = input("enter adjacent node: ")
-            adjacent_node_edge_weight = int(input("enter edge weight: "))
-            dict1[node][adjacent_node] = adjacent_node_edge_weight
-            adjacency_choice = input("is there any other adjacent nodes?")
-
-        choice = input("do you want to add other nodes?")
-
-    input_heuristics()
-
-
-def input_heuristics():
-    for nodes_keys in dict1.keys():
-        dict2[nodes_keys] = int(input(f"enter heuristic for {nodes_keys}: "))
-
-
-'''input_graph()'''
-'''graph = Graph(dict1, dict2)'''
-
-graph = Graph({
+g = Graph()
+"""
+dict3 = {
     'A': {'B': 10, 'C': 3},
     'B': {'C': 1, 'D': 2},
     'C': {'B': 4, 'D': 8, 'E': 2},
     'D': {'E': 7},
     'E': {'D': 9}
-}, {
+}
+
+dict4 = {
     'A': 2,
     'B': 3,
     'C': 4,
     'D': 5,
     'E': 0
-})
+}
+graph = Graph(dict3, dict4)
+graph.add_node('z')
+print(graph.adjacency_list)
+graph.add_edge('z','y',3)
+print(graph.adjacency_list)
+graph.add_heuristic('z',100)
+print(graph.heuristics_list)
+graph.reset_graph()
+print(graph.adjacency_list)
+print(graph.heuristics_list)
 
-graph.draw_path(graph.BreadthFirstSearch('A', 'D'))
-graph.draw_path(graph.DepthFirstSearch('A', 'E'))
-graph.draw_path(graph.Greedy('A', 'E'))
-graph.draw_path(graph.a_star('A', 'E'))
-graph.draw_path(graph.uniform_cost('A', 'E'))
-'''graph.draw_path(graph.IterativeDeepening('A', 'E',10))'''
-'''path1 = graph.BreadthFirstSearch('A', 'E')
-Graph.draw_path(path1)'''
-
-'''graph = Graph({
-    'A': {'B': 10, 'C': 3},
-    'B': {'C': 1, 'D': 2},
-    'C': {'B': 4, 'D': 8, 'E': 2},
-    'D': {'E': 7},
-    'E': {'D': 9}
-}, {
-    'A': 2,
-    'B': 3,
-    'C': 4,
-    'D': 5,
-    'E': 0
-})'''
+"""
