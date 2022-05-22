@@ -65,8 +65,8 @@ class WelcomeScreen(QMainWindow):
         elif x== 'AStarSearch':
             tat.g.draw_path(tat.g.a_star())
 
-        '''elif x== 'IterativeDeepeningSearch':'''
-
+        elif x== 'IterativeDeepeningSearch':
+            tat.g.draw_path(tat.g.IterativeDeepeningSearch())
 
 
 # main

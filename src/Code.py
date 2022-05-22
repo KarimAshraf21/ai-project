@@ -206,40 +206,48 @@ class Graph:
         print(f"path is {path}")
         return path
 
-    def IterativeDeepeningSearch(self, start, end):
+    def IterativeDeepeningSearch(self):
+        #convert adj list to adf list of format 2
         self.format2()
+        #some variables
+        current_node = self.start_node
         depth = 0
         graph_list = {}
         visited = []
         path = []
         parent = dict()
-        parent[start] = None
+        parent[current_node] = None
+        #loop accross all depth iteration by iteration by callin depth limited search algo
         while True:
             print("Looping at depth %i " % (depth))
-            result = self.DepthLimitedSearch(start, end, depth,graph_list,visited,path,parent)
-            if result == end:
-                return result
+            #compare nodes returned from depth limited so they match a goal
+            result = self.DepthLimitedSearch(current_node, depth, graph_list, visited, path, parent)
+            #if a goal reached then break and return path
+            if result in self.goal_nodes:
+                return path
+            #update depth of the next iteration
             depth = depth + 1
             print(graph_list)
+            #clear graph adjacency list and visited list to be recreated again in  the next iteration
             graph_list = {}
             visited = []
 
-
-
-    def DepthLimitedSearch(self, node, end, depth,graph_list,visited,path,parent):
+    def DepthLimitedSearch(self, node, depth, graph_list, visited, path, parent):
         print(node, depth)
+        #update graph adjacnency list and visited list for this iteration
         graph_list[node] = []
         if node not in visited:
             visited.append(node)
         if node not in graph_list.items():
             if node in visited and depth != 0:
                 graph_list[node] = self.get_neighbors(node)
+        #set parent for each node in graph adjacency list
         for j in graph_list.keys():
-            for (i,w) in graph_list[j]:
+            for (i, w) in graph_list[j]:
                 parent[i] = j
-
-
-        if depth == 0 and node == end:
+        #if a goal is found then update path list using the parent dictionary and then reverse it to maintain order
+        #then return node
+        if depth == 0 and node in self.goal_nodes:
             current_node = node
             path.append(current_node)
             while parent[current_node] is not None:
@@ -249,25 +257,28 @@ class Graph:
             print(graph_list)
             print(path)
             return node
+        #if goal not found yet and there is more depth to explore
+        #then call depthlimited again (new iteration) over childrean -> explore new depth until reaching a goal then return goal node
         elif depth > 0:
-            for (i,weight) in self.get_neighbors(node):
-                if end == self.DepthLimitedSearch(i, end, depth - 1,graph_list,visited,path,parent):
-                    return end
+            for (i, weight) in self.get_neighbors(node):
+                for j in self.goal_nodes:
+                    if j == self.DepthLimitedSearch(i, depth - 1, graph_list, visited, path, parent):
+                        return j
 
     def uniform_cost(self):
 
-        # open_list is a list of nodes which have been visited, but who's neighbors
+        # visited_list is a list of nodes which have been visited, but who's neighbors
         # haven't all been inspected, starts off with the start node
-        # closed_list is a list of nodes which have been visited
+        # expanded_list is a list of nodes which have been visited
         # and who's neighbors have been inspected
-        open_list = set([self.start_node])
-        closed_list = set([])
+        visited_list = set([self.start_node])
+        expanded_list = set([])
 
-        # g contains current distances from start_node to all other nodes
+        # graph_dict contains current distances from start_node to all other nodes
         # the default value (if it's not found in the map) is +infinity
-        g = {}
+        graph_dict = {}
 
-        g[self.start_node] = 0
+        graph_dict[self.start_node] = 0
 
         self.format2()
 
@@ -275,26 +286,26 @@ class Graph:
         parents = {}
         parents[self.start_node] = self.start_node
 
-        while len(open_list) > 0:
-            n = None
+        while len(visited_list) > 0:
+            node = None
 
             # find a node with the lowest value of f() - evaluation function
-            for v in open_list:
-                if n == None or g[v] < g[n]:
-                    n = v;
+            for v in visited_list:
+                if node == None or graph_dict[v] < graph_dict[node]:
+                    node = v;
 
-            if n == None:
+            if node == None:
                 print('Path does not exist!')
                 return None
 
             # if the current node is the stop_node
             # then we begin reconstructin the path from it to the start_node
-            if n in self.goal_nodes:
+            if node in self.goal_nodes:
                 reconst_path = []
 
-                while parents[n] != n:
-                    reconst_path.append(n)
-                    n = parents[n]
+                while parents[node] != node:
+                    reconst_path.append(node)
+                    node = parents[node]
 
                 reconst_path.append(self.start_node)
 
@@ -304,73 +315,74 @@ class Graph:
                 return reconst_path
 
             # for all neighbors of the current node do
-            for (m, weight) in self.get_neighbors(n):
-                # if the current node isn't in both open_list and closed_list
-                # add it to open_list and note n as it's parent
-                if m not in open_list and m not in closed_list:
-                    open_list.add(m)
-                    parents[m] = n
-                    g[m] = g[n] + weight
+            for (m, weight) in self.get_neighbors(node):
+                # if the current node isn't in both visited_list and expanded_list
+                # add it to visited_list and note node as it's parent
+                if m not in visited_list and m not in expanded_list:
+                    visited_list.add(m)
+                    parents[m] = node
+                    graph_dict[m] = graph_dict[node] + weight
 
-                # otherwise, check if it's quicker to first visit n, then m
-                # and if it is, update parent data and g data
-                # and if the node was in the closed_list, move it to open_list
+                # otherwise, check if it's quicker to first visit node, then m
+                # and if it is, update parent data and graph_dict data
+                # and if the node was in the expanded_list, move it to visited_list
                 else:
-                    if g[m] > g[n] + weight:
-                        g[m] = g[n] + weight
-                        parents[m] = n
+                    if graph_dict[m] > graph_dict[node] + weight:
+                        graph_dict[m] = graph_dict[node] + weight
+                        parents[m] = node
 
-                        if m in closed_list:
-                            closed_list.remove(m)
-                            open_list.add(m)
+                        if m in expanded_list:
+                            expanded_list.remove(m)
+                            visited_list.add(m)
 
-            # remove n from the open_list, and add it to closed_list
+            # remove node from the visited_list, and add it to expanded_list
             # because all of his neighbors were inspected
-            open_list.remove(n)
-            closed_list.add(n)
+            visited_list.remove(node)
+            expanded_list.add(node)
 
         print('Path does not exist!')
         return None
 
     def a_star(self):
 
-        # open_list is a list of nodes which have been visited, but who's neighbors
+        # visited_list is a list of nodes which have been visited, but who's neighbors
         # haven't all been inspected, starts off with the start node
-        # closed_list is a list of nodes which have been visited
+        # expanded_list is a list of nodes which have been visited
         # and who's neighbors have been inspected
-        open_list = set([self.start_node])
-        closed_list = set([])
+        visited_list = set([self.start_node])
+        expanded_list = set([])
         self.format2()
-        # g contains current distances from start_node to all other nodes
+        # graph_dict contain
+        # s current distances from start_node to all other nodes
         # the default value (if it's not found in the map) is +infinity
-        g = {}
+        graph_dict = {}
 
-        g[self.start_node] = 0
+        graph_dict[self.start_node] = 0
 
         # parents contains an adjacency map of all nodes
         parents = {}
         parents[self.start_node] = self.start_node
 
-        while len(open_list) > 0:
-            n = None
+        while len(visited_list) > 0:
+            node = None
 
             # find a node with the lowest value of f() - evaluation function
-            for v in open_list:
-                if n == None or g[v] + self.heuristics_list[v] < g[n] + self.heuristics_list[n]:
-                    n = v;
+            for v in visited_list:
+                if node == None or graph_dict[v] + self.heuristics_list[v] < graph_dict[node] + self.heuristics_list[node]:
+                    node = v;
 
-            if n == None:
+            if node == None:
                 print('Path does not exist!')
                 return None
 
             # if the current node is the stop_node
             # then we begin reconstructin the path from it to the start_node
-            if n in self.goal_nodes:
+            if node in self.goal_nodes:
                 reconst_path = []
 
-                while parents[n] != n:
-                    reconst_path.append(n)
-                    n = parents[n]
+                while parents[node] != node:
+                    reconst_path.append(node)
+                    node = parents[node]
 
                 reconst_path.append(self.start_node)
 
@@ -380,42 +392,42 @@ class Graph:
                 return reconst_path
 
             # for all neighbors of the current node do
-            for (m, weight) in self.get_neighbors(n):
-                # if the current node isn't in both open_list and closed_list
-                # add it to open_list and note n as it's parent
-                if m not in open_list and m not in closed_list:
-                    open_list.add(m)
-                    parents[m] = n
-                    g[m] = g[n] + weight
+            for (m, weight) in self.get_neighbors(node):
+                # if the current node isn't in both visited_list and expanded_list
+                # add it to visited_list and note node as it's parent
+                if m not in visited_list and m not in expanded_list:
+                    visited_list.add(m)
+                    parents[m] = node
+                    graph_dict[m] = graph_dict[node] + weight
 
-                # otherwise, check if it's quicker to first visit n, then m
-                # and if it is, update parent data and g data
-                # and if the node was in the closed_list, move it to open_list
+                # otherwise, check if it's quicker to first visit node, then m
+                # and if it is, update parent data and graph_dict data
+                # and if the node was in the expanded_list, move it to visited_list
                 else:
-                    if g[m] > g[n] + weight:
-                        g[m] = g[n] + weight
-                        parents[m] = n
+                    if graph_dict[m] > graph_dict[node] + weight:
+                        graph_dict[m] = graph_dict[node] + weight
+                        parents[m] = node
 
-                        if m in closed_list:
-                            closed_list.remove(m)
-                            open_list.add(m)
+                        if m in expanded_list:
+                            expanded_list.remove(m)
+                            visited_list.add(m)
 
-            # remove n from the open_list, and add it to closed_list
+            # remove node from the visited_list, and add it to expanded_list
             # because all of his neighbors were inspected
-            open_list.remove(n)
-            closed_list.add(n)
+            visited_list.remove(node)
+            expanded_list.add(node)
 
         print('Path does not exist!')
         return None
 
     def Greedy(self):
         self.format2()
-        # open_list is a list of nodes which have been visited, but who's neighbors
+        # visited_list is a list of nodes which have been visited, but who's neighbors
         # haven't all been inspected, starts off with the start node
-        # closed_list is a list of nodes which have been visited
+        # expanded_list is a list of nodes which have been visited
         # and who's neighbors have been inspected
-        open_list = set([self.start_node])
-        closed_list = set([])
+        visited_list = set([self.start_node])
+        expanded_list = set([])
 
         # g contains current distances from start_node to all other nodes
         # the default value (if it's not found in the map) is +infinity
@@ -427,26 +439,26 @@ class Graph:
         parents = {}
         parents[self.start_node] = self.start_node
 
-        while len(open_list) > 0:
-            n = None
+        while len(visited_list) > 0:
+            node = None
 
             # find a node with the lowest value of f() - evaluation function
-            for v in open_list:
-                if n == None or self.heuristics_list[v] < self.heuristics_list[n]:
-                    n = v;
+            for v in visited_list:
+                if node == None or self.heuristics_list[v] < self.heuristics_list[node]:
+                    node = v;
 
-            if n == None:
+            if node == None:
                 print('Path does not exist!')
                 return None
 
             # if the current node is the stop_node
             # then we begin reconstructin the path from it to the start_node
-            if n in self.goal_nodes:
+            if node in self.goal_nodes:
                 reconst_path = []
 
-                while parents[n] != n:
-                    reconst_path.append(n)
-                    n = parents[n]
+                while parents[node] != node:
+                    reconst_path.append(node)
+                    node = parents[node]
 
                 reconst_path.append(self.start_node)
 
@@ -456,30 +468,30 @@ class Graph:
                 return reconst_path
 
             # for all neighbors of the current node do
-            for (m, weight) in self.get_neighbors(n):
-                # if the current node isn't in both open_list and closed_list
-                # add it to open_list and note n as it's parent
-                if m not in open_list and m not in closed_list:
-                    open_list.add(m)
-                    parents[m] = n
-                    # g[m] = g[n] + weight
+            for (m, weight) in self.get_neighbors(node):
+                # if the current node isn't in both visited_list and expanded_list
+                # add it to visited_list and note node as it's parent
+                if m not in visited_list and m not in expanded_list:
+                    visited_list.add(m)
+                    parents[m] = node
+                    # g[m] = g[node] + weight
 
-                # otherwise, check if it's quicker to first visit n, then m
+                # otherwise, check if it's quicker to first visit node, then m
                 # and if it is, update parent data and g data
-                # and if the node was in the closed_list, move it to open_list
+                # and if the node was in the expanded_list, move it to visited_list
                 else:
-                    if self.heuristics_list[m] > self.heuristics_list[n]:
-                        # g[m] = g[n] + weight
-                        parents[m] = n
+                    if self.heuristics_list[m] > self.heuristics_list[node]:
+                        # g[m] = g[node] + weight
+                        parents[m] = node
 
-                        if m in closed_list:
-                            closed_list.remove(m)
-                            open_list.add(m)
+                        if m in expanded_list:
+                            expanded_list.remove(m)
+                            visited_list.add(m)
 
-            # remove n from the open_list, and add it to closed_list
+            # remove node from the visited_list, and add it to expanded_list
             # because all of his neighbors were inspected
-            open_list.remove(n)
-            closed_list.add(n)
+            visited_list.remove(node)
+            expanded_list.add(node)
 
         print('Path does not exist!')
         return None
