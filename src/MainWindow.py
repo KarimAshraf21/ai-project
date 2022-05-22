@@ -11,7 +11,7 @@ class WelcomeScreen(QMainWindow):
     def __init__(self):
         super(WelcomeScreen, self).__init__()
         loadUi("WelcomeScreen.ui", self)
-        self.AddNodeButton.clicked.connect(self.addNode)
+
         self.AddEdgeButton.clicked.connect(self.addEdge)
         self.AddHeuristicButton.clicked.connect(self.setHeuristic)
         self.ResetGraphButton.clicked.connect(self.resetGraph)
@@ -22,9 +22,6 @@ class WelcomeScreen(QMainWindow):
         self.DrawGraphButton.clicked.connect(self.drawGraph)
         self.DrawPathButton.clicked.connect(self.drawPath)
         self.SetTypeButton.clicked.connect(self.setType)
-
-    def addNode(self):
-        tat.g.add_node(self.NodeBox.text())
 
     def addEdge(self):
         if self.WeightBox.text():
@@ -51,15 +48,34 @@ class WelcomeScreen(QMainWindow):
         tat.g.reset_goal_nodes()
 
     def drawGraph(self):
+
         if tat.g.isDirected:
+
             tat.g.format1()
             G = nx.from_dict_of_dicts(tat.g.adjFormat1, create_using=nx.MultiDiGraph)
-            nx.draw_networkx(G)
+            colormap = []
+            for node in G:
+                if node == tat.g.start_node:
+                    colormap.append('red')
+                elif node in tat.g.goal_nodes:
+                    colormap.append('green')
+                else:
+                    colormap.append('blue')
+            nx.draw_networkx(G, node_color=colormap, with_labels=True)
             plt.show()
 
         if not tat.g.isDirected:
             tat.g.format1()
             G = nx.from_dict_of_dicts(tat.g.adjFormat1, create_using=nx.MultiGraph)
+            colormap = []
+            for node in G:
+                if node == tat.g.start_node:
+                    colormap.append('red')
+                elif node in tat.g.goal_nodes:
+                    colormap.append('green')
+                else:
+                    colormap.append('blue')
+            nx.draw_networkx(G, node_color=colormap, with_labels=True)
             nx.draw_networkx(G)
             plt.show()
 
@@ -90,6 +106,6 @@ widget = QtWidgets.QStackedWidget()
 mainwindow = WelcomeScreen()
 mainwindow.setFixedSize(928, 732)
 widget.addWidget(mainwindow)
-mainwindow.addNode()
+
 widget.show()
 sys.exit(app.exec_())

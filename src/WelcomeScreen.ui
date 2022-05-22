@@ -14,58 +14,6 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QFrame" name="frame">
-    <property name="geometry">
-     <rect>
-      <x>12</x>
-      <y>12</y>
-      <width>151</width>
-      <height>111</height>
-     </rect>
-    </property>
-    <property name="frameShape">
-     <enum>QFrame::StyledPanel</enum>
-    </property>
-    <property name="frameShadow">
-     <enum>QFrame::Raised</enum>
-    </property>
-    <widget class="QLineEdit" name="NodeBox">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>40</y>
-       <width>125</width>
-       <height>21</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="AddNodeButton">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>70</y>
-       <width>88</width>
-       <height>32</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Add node</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_2">
-     <property name="geometry">
-      <rect>
-       <x>13</x>
-       <y>13</y>
-       <width>58</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Add node</string>
-     </property>
-    </widget>
-   </widget>
    <widget class="QFrame" name="frame_3">
     <property name="geometry">
      <rect>
@@ -192,39 +140,6 @@
       <string>ResetGoal</string>
      </property>
     </widget>
-    <widget class="QComboBox" name="DirectionBox">
-     <property name="geometry">
-      <rect>
-       <x>30</x>
-       <y>280</y>
-       <width>121</width>
-       <height>32</height>
-      </rect>
-     </property>
-     <item>
-      <property name="text">
-       <string>Directed</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>UnDirected</string>
-      </property>
-     </item>
-    </widget>
-    <widget class="QPushButton" name="SetTypeButton">
-     <property name="geometry">
-      <rect>
-       <x>30</x>
-       <y>310</y>
-       <width>100</width>
-       <height>32</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Set type</string>
-     </property>
-    </widget>
     <zorder>AddGoalsButton</zorder>
     <zorder>StartNodeBox</zorder>
     <zorder>GoalNodeBox</zorder>
@@ -234,8 +149,6 @@
     <zorder>DrawGraphButton</zorder>
     <zorder>ResetStartButton</zorder>
     <zorder>ResetGoalButton</zorder>
-    <zorder>DirectionBox</zorder>
-    <zorder>SetTypeButton</zorder>
    </widget>
    <widget class="QFrame" name="frame_2">
     <property name="geometry">
@@ -432,9 +345,9 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>130</y>
+      <y>10</y>
       <width>151</width>
-      <height>233</height>
+      <height>351</height>
      </rect>
     </property>
     <property name="frameShape">
@@ -485,6 +398,34 @@
       <widget class="QPushButton" name="AddEdgeButton">
        <property name="text">
         <string>Add edge</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Type</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="DirectionBox">
+       <item>
+        <property name="text">
+         <string>Directed</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>UnDirected</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="SetTypeButton">
+       <property name="text">
+        <string>Set type</string>
        </property>
       </widget>
      </item>
