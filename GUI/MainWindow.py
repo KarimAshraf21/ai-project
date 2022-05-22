@@ -2,13 +2,9 @@ import sys
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QDialog, QApplication, QFileDialog, QMainWindow
 from PyQt5.uic import loadUi
-import src.AlgoTest as at
+import src.Code as tat
 import networkx as nx
 import matplotlib.pyplot as plt
-
-
-def resetGraph():
-    at.reset_graph()
 
 
 class WelcomeScreen(QMainWindow):
@@ -18,22 +14,59 @@ class WelcomeScreen(QMainWindow):
         self.AddNodeButton.clicked.connect(self.addNode)
         self.AddEdgeButton.clicked.connect(self.addEdge)
         self.AddHeuristicButton.clicked.connect(self.setHeuristic)
-        self.DrawGraphButton.clicked.connect(at.create_graph())
-        self.ResetGraphButton.clicked.connect(at.resetGraph)
+        self.ResetGraphButton.clicked.connect(self.resetGraph)
+        self.AddStartNodeButton.clicked.connect(self.addStart)
+        self.ResetStartButton.clicked.connect(self.resetStart)
+        self.AddGoalsButton.clicked.connect(self.addGoal)
+        self.ResetGoalButton.clicked.connect(self.resetGoal)
+        self.DrawGraphButton.clicked.connect(self.drawGraph)
+        self.DrawPathButton.clicked.connect(self.drawPath)
 
     def addNode(self):
-        at.add_node(self.NodeBox.text())
+        tat.g.add_node(self.NodeBox.text())
 
     def addEdge(self):
-        at.add_edge(self.FromBox.text(), self.ToBox.text(), self.WeightBox.text())
+        tat.g.add_edge(self.FromBox.text(), self.ToBox.text(), self.WeightBox.text())
 
     def setHeuristic(self):
-        at.add_heuristic(self.CurrentNodeHeuristicBox.text(), self.HeuristicBox.text())
+        tat.g.add_heuristic(self.CurrentNodeHeuristicBox.text(), self.HeuristicBox.text())
 
-    def createAndDrawGraph(self):
-        g = at.create_graph()
-        nx.draw_networkx(g)
+    def resetGraph(self):
+        tat.g.reset_graph()
+
+    def addStart(self):
+        tat.g.set_start_node(self.StartNodeBox.text())
+
+    def resetStart(self):
+        tat.g.reset_start_node()
+
+    def addGoal(self):
+        tat.g.append_goal_nodes(self.GoalNodeBox.text())
+
+    def resetGoal(self):
+        tat.g.reset_goal_nodes()
+
+    def drawGraph(self):
+        tat.g.format1()
+        G = nx.from_dict_of_dicts(tat.g.adjFormat1, create_using=nx.MultiDiGraph)
+        nx.draw_networkx(G)
         plt.show()
+
+    def drawPath(self):
+        x = self.AlgoSelectBox.currentText()
+        if x == 'BreadthFirstSearch':
+            tat.g.draw_path(tat.g.BreadthFirstSearch())
+        elif x == 'DepthFirstSearch':
+            tat.g.draw_path(tat.g.DepthFirstSearch())
+        elif x== 'UniformCostSearch':
+            tat.g.draw_path(tat.g.uniform_cost())
+        elif x== 'GreedySearch':
+            tat.g.draw_path(tat.g.Greedy())
+        elif x== 'AStarSearch':
+            tat.g.draw_path(tat.g.a_star())
+
+        '''elif x== 'IterativeDeepeningSearch':'''
+
 
 
 # main
