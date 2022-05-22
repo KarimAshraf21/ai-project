@@ -64,9 +64,11 @@ class Graph:
             elif node_from in self.adjacency_list.keys() and node_to not in self.adjacency_list.keys():
                 self.add_node(node_to)
                 self.add_edge(node_from, node_to, edge_weight)
+
             elif node_from not in self.adjacency_list.keys() and node_to in self.adjacency_list.keys():
                 self.add_node(node_from)
                 self.add_edge(node_from, node_to, edge_weight)
+            print(self.adjacency_list)
 
     def reset_graph(self):
         self.adjacency_list.clear()
