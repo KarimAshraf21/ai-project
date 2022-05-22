@@ -2,7 +2,7 @@ import sys
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QDialog, QApplication, QFileDialog, QMainWindow
 from PyQt5.uic import loadUi
-import src.Code as tat
+import Code as tat
 import networkx as nx
 import matplotlib.pyplot as plt
 
