@@ -21,6 +21,7 @@ class WelcomeScreen(QMainWindow):
         self.ResetGoalButton.clicked.connect(self.resetGoal)
         self.DrawGraphButton.clicked.connect(self.drawGraph)
         self.DrawPathButton.clicked.connect(self.drawPath)
+        self.SetTypeButton.clicked.connect(self.setType)
 
     def addNode(self):
         tat.g.add_node(self.NodeBox.text())
@@ -47,10 +48,17 @@ class WelcomeScreen(QMainWindow):
         tat.g.reset_goal_nodes()
 
     def drawGraph(self):
-        tat.g.format1()
-        G = nx.from_dict_of_dicts(tat.g.adjFormat1, create_using=nx.MultiDiGraph)
-        nx.draw_networkx(G)
-        plt.show()
+        if tat.g.isDirected:
+            tat.g.format1()
+            G = nx.from_dict_of_dicts(tat.g.adjFormat1, create_using=nx.MultiDiGraph)
+            nx.draw_networkx(G)
+            plt.show()
+
+        if not tat.g.isDirected:
+            tat.g.format1()
+            G = nx.from_dict_of_dicts(tat.g.adjFormat1, create_using=nx.MultiGraph)
+            nx.draw_networkx(G)
+            plt.show()
 
     def drawPath(self):
         x = self.AlgoSelectBox.currentText()
@@ -58,15 +66,18 @@ class WelcomeScreen(QMainWindow):
             tat.g.draw_path(tat.g.BreadthFirstSearch())
         elif x == 'DepthFirstSearch':
             tat.g.draw_path(tat.g.DepthFirstSearch())
-        elif x== 'UniformCostSearch':
+        elif x == 'UniformCostSearch':
             tat.g.draw_path(tat.g.uniform_cost())
-        elif x== 'GreedySearch':
+        elif x == 'GreedySearch':
             tat.g.draw_path(tat.g.Greedy())
-        elif x== 'AStarSearch':
+        elif x == 'AStarSearch':
             tat.g.draw_path(tat.g.a_star())
-
-        elif x== 'IterativeDeepeningSearch':
+        elif x == 'IterativeDeepeningSearch':
             tat.g.draw_path(tat.g.IterativeDeepeningSearch())
+
+    def setType(self):
+        x = self.DirectionBox.currentText()
+        tat.g.set_type(x)
 
 
 # main

@@ -192,6 +192,39 @@
       <string>ResetGoal</string>
      </property>
     </widget>
+    <widget class="QComboBox" name="DirectionBox">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>280</y>
+       <width>121</width>
+       <height>32</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>Directed</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>UnDirected</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QPushButton" name="SetTypeButton">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>310</y>
+       <width>100</width>
+       <height>32</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Set type</string>
+     </property>
+    </widget>
     <zorder>AddGoalsButton</zorder>
     <zorder>StartNodeBox</zorder>
     <zorder>GoalNodeBox</zorder>
@@ -201,6 +234,8 @@
     <zorder>DrawGraphButton</zorder>
     <zorder>ResetStartButton</zorder>
     <zorder>ResetGoalButton</zorder>
+    <zorder>DirectionBox</zorder>
+    <zorder>SetTypeButton</zorder>
    </widget>
    <widget class="QFrame" name="frame_2">
     <property name="geometry">
@@ -462,7 +497,7 @@
      <x>0</x>
      <y>0</y>
      <width>928</width>
-     <height>22</height>
+     <height>24</height>
     </rect>
    </property>
   </widget>

@@ -19,6 +19,14 @@ class Graph:
         self.goal_nodes = []
         self.adjFormat1 = dict()
         self.adjFormat2 = dict()
+        self.isDirected = True
+
+    def set_type(self, type):
+        if type == 'Directed':
+            self.isDirected = True
+
+        elif type == 'UnDirected':
+            self.isDirected = False
 
     def add_node(self, node):
         if node == "":
@@ -32,15 +40,31 @@ class Graph:
         print(self.heuristics_list)
 
     def add_edge(self, node_from, node_to, edge_weight):
-        if node_from in self.adjacency_list.keys():
-            self.adjacency_list[node_from][node_to] = int(edge_weight)
 
-        elif node_from not in self.adjacency_list.keys():
-            self.add_node(node_from)
-            self.add_edge(node_from, node_to, edge_weight)
-        if node_to not in self.adjacency_list.keys():
-            self.adjacency_list[node_to] = {}
-        print(self.adjacency_list)
+        if self.isDirected:
+            if node_from in self.adjacency_list.keys():
+                self.adjacency_list[node_from][node_to] = int(edge_weight)
+            elif node_from not in self.adjacency_list.keys():
+                self.add_node(node_from)
+                self.add_edge(node_from, node_to, edge_weight)
+            if node_to not in self.adjacency_list.keys():
+                self.adjacency_list[node_to] = {}
+            print(self.adjacency_list)
+
+        elif not self.isDirected:
+            if node_from in self.adjacency_list.keys() and node_to in self.adjacency_list.keys():
+                self.adjacency_list[node_from][node_to] = int(edge_weight)
+                self.adjacency_list[node_to][node_from] = int(edge_weight)
+            elif node_from not in self.adjacency_list.keys() and node_to not in self.adjacency_list.keys():
+                self.add_node(node_from)
+                self.add_node(node_to)
+                self.add_edge(node_from, node_to, edge_weight)
+            elif node_from in self.adjacency_list.keys() and node_to not in self.adjacency_list.keys():
+                self.add_node(node_to)
+                self.add_edge(node_from,node_to,edge_weight)
+            elif node_from not in self.adjacency_list.keys() and node_to in self.adjacency_list.keys():
+                self.add_node(node_from)
+                self.add_edge(node_from, node_to, edge_weight)
 
     def reset_graph(self):
         self.adjacency_list.clear()
@@ -207,9 +231,9 @@ class Graph:
         return path
 
     def IterativeDeepeningSearch(self):
-        #convert adj list to adf list of format 2
+        # convert adj list to adf list of format 2
         self.format2()
-        #some variables
+        # some variables
         current_node = self.start_node
         depth = 0
         graph_list = {}
@@ -217,36 +241,36 @@ class Graph:
         path = []
         parent = dict()
         parent[current_node] = None
-        #loop accross all depth iteration by iteration by callin depth limited search algo
+        # loop accross all depth iteration by iteration by callin depth limited search algo
         while True:
             print("Looping at depth %i " % (depth))
-            #compare nodes returned from depth limited so they match a goal
+            # compare nodes returned from depth limited so they match a goal
             result = self.DepthLimitedSearch(current_node, depth, graph_list, visited, path, parent)
-            #if a goal reached then break and return path
+            # if a goal reached then break and return path
             if result in self.goal_nodes:
                 return path
-            #update depth of the next iteration
+            # update depth of the next iteration
             depth = depth + 1
             print(graph_list)
-            #clear graph adjacency list and visited list to be recreated again in  the next iteration
+            # clear graph adjacency list and visited list to be recreated again in  the next iteration
             graph_list = {}
             visited = []
 
     def DepthLimitedSearch(self, node, depth, graph_list, visited, path, parent):
         print(node, depth)
-        #update graph adjacnency list and visited list for this iteration
+        # update graph adjacnency list and visited list for this iteration
         graph_list[node] = []
         if node not in visited:
             visited.append(node)
         if node not in graph_list.items():
             if node in visited and depth != 0:
                 graph_list[node] = self.get_neighbors(node)
-        #set parent for each node in graph adjacency list
+        # set parent for each node in graph adjacency list
         for j in graph_list.keys():
             for (i, w) in graph_list[j]:
                 parent[i] = j
-        #if a goal is found then update path list using the parent dictionary and then reverse it to maintain order
-        #then return node
+        # if a goal is found then update path list using the parent dictionary and then reverse it to maintain order
+        # then return node
         if depth == 0 and node in self.goal_nodes:
             current_node = node
             path.append(current_node)
@@ -257,8 +281,8 @@ class Graph:
             print(graph_list)
             print(path)
             return node
-        #if goal not found yet and there is more depth to explore
-        #then call depthlimited again (new iteration) over childrean -> explore new depth until reaching a goal then return goal node
+        # if goal not found yet and there is more depth to explore
+        # then call depthlimited again (new iteration) over childrean -> explore new depth until reaching a goal then return goal node
         elif depth > 0:
             for (i, weight) in self.get_neighbors(node):
                 for j in self.goal_nodes:
@@ -368,7 +392,8 @@ class Graph:
 
             # find a node with the lowest value of f() - evaluation function
             for v in visited_list:
-                if node == None or graph_dict[v] + self.heuristics_list[v] < graph_dict[node] + self.heuristics_list[node]:
+                if node == None or graph_dict[v] + self.heuristics_list[v] < graph_dict[node] + self.heuristics_list[
+                    node]:
                     node = v;
 
             if node == None:
