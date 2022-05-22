@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="newPrefix">
+    <file>Optimized-AI_image_Google-1024x576.jpg</file>
+  </qresource>
+</RCC>
