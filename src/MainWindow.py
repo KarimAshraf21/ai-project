@@ -27,7 +27,10 @@ class WelcomeScreen(QMainWindow):
         tat.g.add_node(self.NodeBox.text())
 
     def addEdge(self):
-        tat.g.add_edge(self.FromBox.text(), self.ToBox.text(), self.WeightBox.text())
+        if self.WeightBox.text():
+            tat.g.add_edge(self.FromBox.text(), self.ToBox.text(), self.WeightBox.text())
+        else:
+            tat.g.add_edge(self.FromBox.text(), self.ToBox.text(), 1)
 
     def setHeuristic(self):
         tat.g.add_heuristic(self.CurrentNodeHeuristicBox.text(), self.HeuristicBox.text())

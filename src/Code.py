@@ -40,6 +40,8 @@ class Graph:
         print(self.heuristics_list)
 
     def add_edge(self, node_from, node_to, edge_weight):
+        if edge_weight is None:
+            edge_weight = 1
 
         if self.isDirected:
             if node_from in self.adjacency_list.keys():
@@ -61,7 +63,7 @@ class Graph:
                 self.add_edge(node_from, node_to, edge_weight)
             elif node_from in self.adjacency_list.keys() and node_to not in self.adjacency_list.keys():
                 self.add_node(node_to)
-                self.add_edge(node_from,node_to,edge_weight)
+                self.add_edge(node_from, node_to, edge_weight)
             elif node_from not in self.adjacency_list.keys() and node_to in self.adjacency_list.keys():
                 self.add_node(node_from)
                 self.add_edge(node_from, node_to, edge_weight)
@@ -540,14 +542,17 @@ class Graph:
             self.adjFormat2[node] = List
 
     def draw_path(self, path):  # function takes search function as a parameter
-        self.path_array = path
-        path_graph = nx.DiGraph()
-        path_graph.add_nodes_from(self.path_array)
-        for i in range(len(self.path_array) - 1):
-            path_graph.add_edge(self.path_array[i], self.path_array[i + 1])
+        if path is None:
+            return
+        else:
+            self.path_array = path
+            path_graph = nx.DiGraph()
+            path_graph.add_nodes_from(self.path_array)
+            for i in range(len(self.path_array) - 1):
+                path_graph.add_edge(self.path_array[i], self.path_array[i + 1])
 
-        nx.draw_networkx(path_graph, with_labels=True)
-        plt.show()
+            nx.draw_networkx(path_graph, with_labels=True)
+            plt.show()
 
 
 g = Graph()
