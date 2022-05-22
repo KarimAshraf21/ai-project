@@ -469,7 +469,7 @@
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources>
-  <include location="C:/Users/ziada/Desktop/background.qrc"/>
+  <include location="background.qrc"/>
  </resources>
  <connections/>
 </ui>
