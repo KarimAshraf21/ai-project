@@ -206,74 +206,53 @@ class Graph:
         print(f"path is {path}")
         return path
 
-    def IterativeDeepeningBool(self, start_node, goal_node, max_depth):
-        # some variables
+    def IterativeDeepeningSearch(self, start, end):
+        self.format2()
+        depth = 0
+        graph_list = {}
         visited = []
-        stack_fringe = []
         path = []
-        current_node = start_node
-        # dictionary that keeps track of parents to find path
         parent = dict()
-        parent[start_node] = None
-        found = False
-        # creating the graph
-        self.format1()
-        G = nx.from_dict_of_dicts(self.adjFormat1, create_using=nx.MultiDiGraph)
-        stack_fringe.append(current_node)
-        if start_node == goal_node:
-            visited.append(current_node)
-            found = True
-            return True
-        if max_depth <= 0:
-            return False
-        for (node, weight) in self.get_neighbors(start_node):
-            visited.append(current_node)
-            print(f"visited {visited}")
-            neighbors_iter = G.neighbors(current_node)
-            neighbors = list(neighbors_iter)
-            neighbors.sort()
-            neighbors.reverse()
-            print(neighbors)
-            print(parent)
-            # assigning parents to nodes
-            for neighbor in neighbors:
-                if neighbor in parent.keys():
-                    list(parent[neighbor]).extend(current_node)
-                else:
-                    parent[neighbor] = current_node
-            # pushing nodes into the fringe
-            for neighbor in neighbors:
-                print(f"neighbor {neighbor}")
-                if neighbor in visited:
-                    continue
-                else:
-                    stack_fringe.append(neighbor)
-            neighbors.clear()
+        parent[start] = None
+        while True:
+            print("Looping at depth %i " % (depth))
+            result = self.DepthLimitedSearch(start, end, depth,graph_list,visited,path,parent)
+            if result == end:
+                return result
+            depth = depth + 1
+            print(graph_list)
+            graph_list = {}
+            visited = []
 
-        if found:
-            print("goal found")
-            '''path(goal_node)'''
-            # backtracking for getting the parents which are the path
-            path.append(goal_node)
+
+
+    def DepthLimitedSearch(self, node, end, depth,graph_list,visited,path,parent):
+        print(node, depth)
+        graph_list[node] = []
+        if node not in visited:
+            visited.append(node)
+        if node not in graph_list.items():
+            if node in visited and depth != 0:
+                graph_list[node] = self.get_neighbors(node)
+        for j in graph_list.keys():
+            for (i,w) in graph_list[j]:
+                parent[i] = j
+
+
+        if depth == 0 and node == end:
+            current_node = node
+            path.append(current_node)
             while parent[current_node] is not None:
                 path.append(parent[current_node])
                 current_node = parent[current_node]
             path.reverse()
-        else:
-            print('not found')
-
-        print(f"visited is {visited}")
-        print(parent)
-        print(f"path is {path}")
-        if self.IterativeDeepeningBool(node, goal_node, max_depth - 1):
-            return True
-        return False
-
-    def IterativeDeepening(self, start_node, goal_node, max_depth):
-        for i in range(max_depth):
-            if self.IterativeDeepeningBool(start_node, goal_node, max_depth):
-                return True
-            return False
+            print(graph_list)
+            print(path)
+            return node
+        elif depth > 0:
+            for (i,weight) in self.get_neighbors(node):
+                if end == self.DepthLimitedSearch(i, end, depth - 1,graph_list,visited,path,parent):
+                    return end
 
     def uniform_cost(self):
 
