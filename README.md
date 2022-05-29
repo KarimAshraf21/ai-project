@@ -1,2 +1,2 @@
 # ai-project
-kolo ygarab ykhosh ye3mel test files w yekteb gowaha comments yeshoof haysama3 3andena wala la
+Ain Shams University Airtificial Intelligence project to implement informed and uninformed search algorithms on directed and undirected graphs in Pyhton
